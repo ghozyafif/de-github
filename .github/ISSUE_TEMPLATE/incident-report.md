@@ -2,7 +2,7 @@
 name: Incident Investigation Report
 about: File a incident investigation report
 title: '[Incident Report] '
-labels: "Incident Report"
+labels: "incident report"
 
 ---
 
@@ -27,4 +27,3 @@ Add any other context about the problem here.
 
 **Report Document**
 Complete report describing the chronology, information gathering, investigation, supporting the report
-https://drive.google.com/drive/folders/122uxxU8Z-lFTENMfg2rPxjMfftmKuLuH?usp=sharing
