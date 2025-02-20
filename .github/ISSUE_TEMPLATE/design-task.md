@@ -1,3 +1,12 @@
+---
+name: Design Task
+about: Issues that designers need to work on
+title: ''
+labels: "design"
+assignees: ''
+
+---
+
 ### Requested By (Optional)
 - By whom or by which client this feature is requested. If it’s a request from internal, write the squad name.
 

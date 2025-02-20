@@ -1,3 +1,11 @@
+---
+name: QA Task
+about: Issues or test cases that QA engineers need to work on
+title: ''
+labels: "testing"
+assignees: ''
+---
+
 ### **Test Scope**
 - Describe the area of testing (e.g., Functional, Regression, UI/UX, API, Performance).
 - Specify whether it is a new feature, enhancement, or bug fix validation.

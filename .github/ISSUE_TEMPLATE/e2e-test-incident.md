@@ -1,3 +1,11 @@
+---
+name: End-to-end test issue
+about: End-to-end test
+title: ''
+labels: "testing"
+assignees: ''
+---
+
 ### Description
 Describe the bugs
 

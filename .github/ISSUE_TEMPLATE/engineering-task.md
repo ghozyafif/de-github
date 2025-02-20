@@ -1,3 +1,12 @@
+---
+name: Engineering Task
+about: Issues that engineers need to work on
+title: ''
+labels: "engineering"
+assignees: ''
+
+---
+
 ### Problems
 - Describe them, and just to emphasize, not the **solution**. Elaborate the context as needed.
 

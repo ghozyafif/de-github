@@ -1,3 +1,13 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: "feature"
+assignees: ''
+
+---
+
+
 ### Requested By (Optional)
 By whom or by which client this feature is requested
 
