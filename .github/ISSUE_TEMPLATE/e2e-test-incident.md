@@ -1,5 +1,5 @@
 ---
-name: End-to-end test issue
+name: End-to-end Test Issue
 about: End-to-end test
 title: ''
 labels: "testing"
