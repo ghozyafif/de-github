@@ -20,5 +20,4 @@
 | 3  | OpenAI Tracker Agent                                 | [OpenAI Tracker Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.j2an8w3spz86#heading=h.2p7ff40c6r7) |
 | 4  | Star of The Month Agent                              | [Star of The Month Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.xii9i3b9qmy5#heading=h.5o5n0j5c3gyt) |
 | 5  | CV Screening Agent                                   | [CV Screening Agent Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.el5ngkevusvw#heading=h.8wjpshdzlg5d) |
-| 6  | AWS Calculator Agent                                 | [AWS Calculator Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.6i23mru49s13#heading=h.fqu017588ss7) |
-| 7 | Weekly Report Agent                                  | [Weekly Report Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.82r8s3in4tbc#heading=h.wo3n77srdkp6) 
+| 6 | Weekly Report Agent                                  | [Weekly Report Doc](https://docs.google.com/document/d/178QJqMNctxJ7c1gfGlcJzZ2B01Eirz2evDp61emgbic/edit?tab=t.82r8s3in4tbc#heading=h.wo3n77srdkp6) 
