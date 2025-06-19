@@ -10,6 +10,12 @@ assignees: ''
 ### Reported By
 - By whom or by which user/client this bug is reported.
 
+### Date and Time of report
+- By when the report of incident happened.
+
+### Environment and Application (Chatbot)
+- Which environment and Application used by user when encounter the issue.
+
 ### Steps to Reproduce
 - Steps to reproduce the behavior including supporting screenshots or videos
 
@@ -17,4 +23,4 @@ assignees: ''
 - A clear and concise description of what you expected to happen.
 
 ### Additional Context
-- Any relevant things, e.g. Slack link, email thread, docs, etc.
+- Any relevant things, e.g. Jam Dev, Conversation ID, Sentry ID, Screenshot, Slack link, email thread, docs, etc.
