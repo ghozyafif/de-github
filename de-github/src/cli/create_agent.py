@@ -360,6 +360,7 @@ class AgentCreator:
                 'aip', 'agents', 'create',
                 '--name', agent_config.name,
                 '--instruction', agent_config.instruction,
+                '--model', agent_config.model,
                 '--timeout', str(agent_config.timeout)
             ]
             
@@ -369,9 +370,9 @@ class AgentCreator:
                     cmd.extend(['--tools', tool])
             
             # Add MCPs if specified
-            # if mcp_names:
-            #     for mcp in mcp_names:
-            #         cmd.extend(['--mcp', mcp])
+            if mcp_names:
+                for mcp in mcp_names:
+                    cmd.extend(['--mcps', mcp])
             
             result = self._run_command(cmd)
             
