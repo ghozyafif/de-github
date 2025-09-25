@@ -1,0 +1,76 @@
+{
+  "result": {
+    "data": [
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/10300",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103#issuecomment-10300",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/103",
+        "id": 10300,
+        "user": {
+          "login": "developer1",
+          "type": "User"
+        },
+        "created_at": "2025-09-14T00:00:00Z",
+        "updated_at": "2025-09-14T00:00:00Z",
+        "body": "Fixed the reported issue.",
+        "author_association": "MEMBER"
+      },
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/10301",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103#issuecomment-10301",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/103",
+        "id": 10301,
+        "user": {
+          "login": "developer17",
+          "type": "User"
+        },
+        "created_at": "2025-09-15T01:00:00Z",
+        "updated_at": "2025-09-15T01:00:00Z",
+        "body": "Blocked by dependency issue.",
+        "author_association": "MEMBER"
+      },
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/10302",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103#issuecomment-10302",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/103",
+        "id": 10302,
+        "user": {
+          "login": "dependabot[bot]",
+          "type": "Bot"
+        },
+        "created_at": "2025-09-16T13:00:00Z",
+        "updated_at": "2025-09-16T13:00:00Z",
+        "body": "Automated security scan completed.",
+        "author_association": "NONE"
+      },
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/10303",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103#issuecomment-10303",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/103",
+        "id": 10303,
+        "user": {
+          "login": "developer1",
+          "type": "User"
+        },
+        "created_at": "2025-09-17T15:00:00Z",
+        "updated_at": "2025-09-17T15:00:00Z",
+        "body": "Need clarification on requirements.",
+        "author_association": "MEMBER"
+      },
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/10304",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103#issuecomment-10304",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/103",
+        "id": 10304,
+        "user": {
+          "login": "developer13",
+          "type": "User"
+        },
+        "created_at": "2025-09-19T02:00:00Z",
+        "updated_at": "2025-09-19T02:00:00Z",
+        "body": "Working on this issue now.",
+        "author_association": "MEMBER"
+      }
+    ]
+  }
+}

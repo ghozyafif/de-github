@@ -1,0 +1,156 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": "PVTI_review_001",
+        "type": "ISSUE",
+        "title": "Search functionality enhancement",
+        "status": "In Review",
+        "content": {
+          "title": "Search functionality enhancement",
+          "body": "Add advanced search filters and facets",
+          "number": 301,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/301",
+          "labels": ["feature"],
+          "assignees": ["developer11"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "review_01"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-10T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_review_002",
+        "type": "ISSUE",
+        "title": "Security audit fixes",
+        "status": "In Review",
+        "content": {
+          "title": "Security audit fixes",
+          "body": "Address findings from security audit",
+          "number": 302,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/302",
+          "labels": ["security", "critical"],
+          "assignees": ["developer12"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "review_02"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-15T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_review_003",
+        "type": "ISSUE",
+        "title": "Notification system",
+        "status": "In Review",
+        "content": {
+          "title": "Notification system",
+          "body": "Implement push notification service",
+          "number": 303,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/303",
+          "labels": ["backend"],
+          "assignees": ["developer13"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "review_03"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-18T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_review_004",
+        "type": "ISSUE",
+        "title": "Caching layer optimization",
+        "status": "In Review",
+        "content": {
+          "title": "Caching layer optimization",
+          "body": "Implement Redis caching for improved performance",
+          "number": 304,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/304",
+          "labels": ["performance"],
+          "assignees": ["developer14"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "review_04"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-12T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_review_005",
+        "type": "ISSUE",
+        "title": "Localization support",
+        "status": "In Review",
+        "content": {
+          "title": "Localization support",
+          "body": "Add multi-language support for UI",
+          "number": 305,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/305",
+          "labels": ["i18n"],
+          "assignees": ["developer15"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "review_05"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-20T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      }
+    ]
+  }
+}

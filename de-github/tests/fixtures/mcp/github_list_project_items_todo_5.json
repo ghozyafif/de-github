@@ -1,0 +1,156 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": "PVTI_todo_001",
+        "type": "ISSUE",
+        "title": "Implement user authentication",
+        "status": "Todo",
+        "content": {
+          "title": "Implement user authentication",
+          "body": "Add OAuth2 authentication for users",
+          "number": 101,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/101",
+          "labels": ["enhancement"],
+          "assignees": ["developer1"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "Todo",
+            "field_type": "single_select",
+            "option_id": "todo_01"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-20T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_todo_002",
+        "type": "ISSUE",
+        "title": "Setup CI/CD pipeline",
+        "status": "Todo",
+        "content": {
+          "title": "Setup CI/CD pipeline",
+          "body": "Configure GitHub Actions for automated deployment",
+          "number": 102,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/102",
+          "labels": ["devops"],
+          "assignees": ["developer2"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "Todo",
+            "field_type": "single_select",
+            "option_id": "todo_02"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-18T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_todo_003",
+        "type": "ISSUE",
+        "title": "Database migration scripts",
+        "status": "Todo",
+        "content": {
+          "title": "Database migration scripts",
+          "body": "Create migration scripts for schema v2.0",
+          "number": 103,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/103",
+          "labels": ["database"],
+          "assignees": ["developer3"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "Todo",
+            "field_type": "single_select",
+            "option_id": "todo_03"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-22T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_todo_004",
+        "type": "ISSUE",
+        "title": "Performance optimization",
+        "status": "Todo",
+        "content": {
+          "title": "Performance optimization",
+          "body": "Optimize API response times for large datasets",
+          "number": 104,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/104",
+          "labels": ["performance"],
+          "assignees": ["developer4"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "Todo",
+            "field_type": "single_select",
+            "option_id": "todo_04"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-10T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_todo_005",
+        "type": "ISSUE",
+        "title": "Documentation update",
+        "status": "Todo",
+        "content": {
+          "title": "Documentation update",
+          "body": "Update API documentation for v2.0",
+          "number": 105,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/105",
+          "labels": ["documentation"],
+          "assignees": ["developer5"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "Todo",
+            "field_type": "single_select",
+            "option_id": "todo_05"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-23T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      }
+    ]
+  }
+}

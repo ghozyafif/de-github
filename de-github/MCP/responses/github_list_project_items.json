@@ -1,0 +1,240 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": "PVTI_lADOACQejc4AvWAdzge62Wc",
+        "type": "ISSUE",
+        "title": "Web Search Contract",
+        "status": "In Review",
+        "content": {
+          "title": "Web Search Contract",
+          "body": "Objective:\n1. @michellshandaka and @widardi will finalize the contract",
+          "number": 534,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/534",
+          "labels": [],
+          "assignees": ["michellshandaka", "widardi"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Project",
+            "value": "Smart Search",
+            "field_type": "single_select",
+            "option_id": "a05671de"
+          },
+          {
+            "name": "Title",
+            "value": "Web Search Contract",
+            "field_type": "text"
+          },
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "a23a721b"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-16T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Due Date",
+            "value": "2025-09-23T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-12T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Pak On's Approval for Timeline",
+            "value": "Other Action Items",
+            "field_type": "single_select",
+            "option_id": "1727ec60"
+          }
+        ],
+        "created_at": "2025-09-19T01:03:50Z",
+        "updated_at": "2025-09-23T06:39:34Z"
+      },
+      {
+        "id": "PVTI_lADOACQejc4AvWAdzge683k",
+        "type": "ISSUE",
+        "title": "Web Search: MCP Tools Implementation",
+        "status": "In Review",
+        "content": {
+          "title": "Web Search: MCP Tools Implementation",
+          "body": "Objective:\n1. Develop web search mcp tools\n2. Adjust based on latest contract ",
+          "number": 535,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/535",
+          "labels": [],
+          "assignees": ["glenn-glair"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Project",
+            "value": "Smart Search",
+            "field_type": "single_select",
+            "option_id": "a05671de"
+          },
+          {
+            "name": "Title",
+            "value": "Web Search: MCP Tools Implementation",
+            "field_type": "text"
+          },
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "a23a721b"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-15T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Due Date",
+            "value": "2025-09-19T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-15T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Pak On's Approval for Timeline",
+            "value": "Other Action Items",
+            "field_type": "single_select",
+            "option_id": "1727ec60"
+          }
+        ],
+        "created_at": "2025-09-19T02:18:32Z",
+        "updated_at": "2025-09-23T06:39:35Z"
+      },
+      {
+        "id": "PVTI_lADOACQejc4AvWAdzge6-M4",
+        "type": "ISSUE",
+        "title": "Enhancement: Implement New Design Pattern in Search Connectors",
+        "status": "In Review",
+        "content": {
+          "title": "Enhancement: Implement New Design Pattern in Search Connectors",
+          "body": "",
+          "number": 537,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/537",
+          "labels": [],
+          "assignees": ["widardi", "michaellhans-glair"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Project",
+            "value": "Smart Search",
+            "field_type": "single_select",
+            "option_id": "a05671de"
+          },
+          {
+            "name": "Title",
+            "value": "Enhancement: Implement New Design Pattern in Search Connectors",
+            "field_type": "text"
+          },
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "a23a721b"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-18T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Due Date",
+            "value": "2025-09-26T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Pak On's Approval for Timeline",
+            "value": "Other Action Items",
+            "field_type": "single_select",
+            "option_id": "1727ec60"
+          }
+        ],
+        "created_at": "2025-09-19T02:33:10Z",
+        "updated_at": "2025-09-23T06:39:35Z"
+      },
+      {
+        "id": "PVTI_lADOACQejc4AvWAdzgfCdW0",
+        "type": "ISSUE",
+        "title": "Agent - Interviewer Verdict Confirmation Agent",
+        "status": "In Review",
+        "content": {
+          "title": "Agent - Interviewer Verdict Confirmation Agent",
+          "body": "",
+          "number": 227,
+          "state": "CLOSED",
+          "url": "https://github.com/GDP-ADMIN/digital-employee/issues/227",
+          "labels": [],
+          "assignees": ["winsonesutanto"],
+          "milestone": null,
+          "repository": "digital-employee"
+        },
+        "field_values": [
+          {
+            "name": "Project",
+            "value": "Digital Employee",
+            "field_type": "single_select",
+            "option_id": "9c4ee7b4"
+          },
+          {
+            "name": "Title",
+            "value": "Agent - Interviewer Verdict Confirmation Agent",
+            "field_type": "text"
+          },
+          {
+            "name": "Incoming Date",
+            "value": "2025-09-23T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Due Date",
+            "value": "2025-09-24T00:00:00",
+            "field_type": "date"
+          },
+          {
+            "name": "Status",
+            "value": "In Review",
+            "field_type": "single_select",
+            "option_id": "a23a721b"
+          },
+          {
+            "name": "Pak On's Approval for Timeline",
+            "value": "Other Action Items",
+            "field_type": "single_select",
+            "option_id": "1727ec60"
+          }
+        ],
+        "created_at": "2025-09-23T02:26:08Z",
+        "updated_at": "2025-09-23T09:20:52Z"
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "limit": 100,
+      "total": 4,
+      "total_page": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}

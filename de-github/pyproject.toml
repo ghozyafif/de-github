@@ -1,0 +1,63 @@
+[tool.poetry]
+name = "github-compliance-agent"
+version = "1.0.0"
+description = "GitHub Issue Compliance Agent for GDP Labs"
+authors = ["ghozyafif <ghozy.g.afif@gdplabs.id>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+pytest-asyncio = "^0.21.0"
+python-dateutil = "^2.8.2"
+
+# GLLM Plugin dependencies (from GDP Labs repository)
+# These will be resolved from the configured private repository
+bosa-core-binary = { version = "^0.8.6", extras = ["all"] }
+bosa-connectors-binary = ">=0.1.0,<0.2.0"
+glchat-plugin = "^0.2.12"
+gllm-agent = { version = "^0.1.0", source = "gen-ai-internal" }
+python-dotenv = "^1.1.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.0.0"
+ruff = "^0.0.280"
+mypy = "^1.4.0"
+
+[[tool.poetry.source]]
+name = "gen-ai-internal"
+url = "https://asia-southeast2-python.pkg.dev/gdp-labs/gen-ai-internal/simple/"
+priority = "supplemental"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-ra -v --tb=short"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "B", "I"]
+ignore = ["E501"]
+target-version = "py311"

@@ -1,0 +1,20 @@
+{
+  "result": {
+    "data": [
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/30400",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/304#issuecomment-30400",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/304",
+        "id": 30400,
+        "user": {
+          "login": "developer19",
+          "type": "User"
+        },
+        "created_at": "2025-09-22T00:00:00Z",
+        "updated_at": "2025-09-22T00:00:00Z",
+        "body": "Blocked by dependency issue.",
+        "author_association": "MEMBER"
+      }
+    ]
+  }
+}

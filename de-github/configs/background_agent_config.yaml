@@ -1,0 +1,151 @@
+# Background Agent Configuration for GDP Labs Agentic AI Platform
+# GitHub Issue Compliance Agent v1.0 PoC
+
+agent:
+  name: "github-compliance-agent"
+  version: "1.0.0"
+  description: "Automated GitHub Project compliance checking agent"
+  type: "background"
+  mode: "one-shot"  # Runs once and exits
+
+execution:
+  timeout_seconds: 300  # 5 minutes max
+  memory_limit_mb: 100
+  cpu_limit: 1.0
+  priority: "normal"
+
+orchestrator:
+  model: "claude-sonnet-4"
+  temperature: 0.2  # Low temperature for consistent results
+  max_tokens: 100000
+
+mcp_connector:
+  provider: "BOSA"
+  endpoints:
+    base_url: "https://api.bosa.id/github/mcp"
+    auth_type: "bearer"
+  functions:
+    - name: "github_list_project_items"
+      description: "List GitHub Project items by status"
+      required_params:
+        - project_number
+        - status
+      optional_params:
+        - limit
+        - cursor
+
+    - name: "github_get_issue_handler"
+      description: "Get detailed issue information"
+      required_params:
+        - owner
+        - repo
+        - issue_number
+
+    - name: "github_list_issues_comments"
+      description: "List comments for an issue"
+      required_params:
+        - owner
+        - repo
+        - issue_number
+      optional_params:
+        - since
+        - per_page
+
+gllm_plugin_tools:
+  - name: "github_compliance_evaluator_tool"
+    module: "src.services.compliance_evaluator"
+    function: "github_compliance_evaluator_tool"
+    description: "Evaluate issues against 7 compliance rules"
+
+  - name: "github_report_generator_tool"
+    module: "src.services.report_generator"
+    function: "github_report_generator_tool"
+    description: "Generate terminal JSON report"
+
+environment:
+  timezone: "Asia/Jakarta"
+  locale: "en_US.UTF-8"
+  python_version: "3.11"
+
+credentials:
+  # Loaded from environment variables
+  github_token: "${GITHUB_TOKEN}"
+  bosa_api_key: "${BOSA_API_KEY}"
+  gdp_labs_token: "${GDP_LABS_TOKEN}"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+
+monitoring:
+  enabled: true
+  metrics:
+    - execution_time
+    - memory_usage
+    - issues_processed
+    - violations_detected
+    - compliance_rate
+
+output:
+  type: "terminal"
+  format: "json"
+  pretty_print: true
+
+error_handling:
+  on_error: "log_and_continue"
+  retry_policy:
+    enabled: true
+    max_retries: 3
+    backoff: "exponential"
+    initial_delay_seconds: 1
+    max_delay_seconds: 30
+
+  partial_results: true
+  fallback_mode: "return_partial"
+
+deployment:
+  platform: "GDP Labs Agentic AI Platform"
+  region: "asia-southeast2"
+  environment: "production"
+
+  resources:
+    compute_tier: "standard"
+    auto_scaling: false
+
+  scheduling:
+    enabled: false  # v1.0 is on-demand only
+    # v2.0 will support: cron: "0 9 * * *"  # Daily at 9 AM Jakarta time
+
+  triggers:
+    - type: "manual"
+      source: "aip_cli"
+    - type: "api"
+      endpoint: "/trigger/compliance-check"
+
+validation:
+  pre_execution:
+    - check: "mcp_connectivity"
+      required: true
+    - check: "credentials_present"
+      required: true
+    - check: "project_accessibility"
+      required: true
+
+  post_execution:
+    - check: "output_format_valid"
+      required: true
+    - check: "execution_time_limit"
+      threshold_seconds: 120
+
+feature_flags:
+  v1_poc:
+    read_only: true
+    terminal_output_only: true
+    sample_15_issues: true
+
+  v2_future:
+    write_comments: false
+    scheduled_execution: false
+    full_project_scan: false
+    webhook_notifications: false

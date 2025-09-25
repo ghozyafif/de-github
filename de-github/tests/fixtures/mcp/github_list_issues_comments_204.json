@@ -1,0 +1,34 @@
+{
+  "result": {
+    "data": [
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/20400",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/204#issuecomment-20400",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/204",
+        "id": 20400,
+        "user": {
+          "login": "developer19",
+          "type": "User"
+        },
+        "created_at": "2025-09-20T00:00:00Z",
+        "updated_at": "2025-09-20T00:00:00Z",
+        "body": "Need clarification on requirements.",
+        "author_association": "MEMBER"
+      },
+      {
+        "url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/comments/20401",
+        "html_url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/204#issuecomment-20401",
+        "issue_url": "https://api.github.com/repos/GDP-ADMIN/dummy-gl-sdk/issues/204",
+        "id": 20401,
+        "user": {
+          "login": "dependabot[bot]",
+          "type": "Bot"
+        },
+        "created_at": "2025-09-21T05:00:00Z",
+        "updated_at": "2025-09-21T05:00:00Z",
+        "body": "CI checks passed.",
+        "author_association": "NONE"
+      }
+    ]
+  }
+}

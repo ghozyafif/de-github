@@ -1,0 +1,55 @@
+{
+  "result": {
+    "data": {
+      "id": "I_kwDOL-78q8_todo_102",
+      "assignees": [
+        "developer3"
+      ],
+      "number": 102,
+      "body": "Issue body for #102",
+      "state": "OPEN",
+      "closed_at": null,
+      "closed_by": null,
+      "labels": [
+        "automated-test"
+      ],
+      "milestone": null,
+      "project_details": {
+        "project_items": [
+          {
+            "id": "PVTI_todo_102",
+            "type": "ISSUE",
+            "created_at": "2025-09-18T00:00:00+00:00",
+            "updated_at": "2025-09-25T15:59:18.476462+00:00",
+            "field_values": [
+              {
+                "name": "Status",
+                "value": "Todo",
+                "field_type": "single_select",
+                "option_id": "todo_02"
+              }
+            ]
+          }
+        ],
+        "projects": [
+          {
+            "id": "PVT_kwDOACQejc4AvWAd",
+            "number": 223,
+            "title": "GL SDK Project Board",
+            "url": "https://github.com/orgs/GDP-ADMIN/projects/223"
+          }
+        ]
+      },
+      "author": "developer3",
+      "created_at": "2025-09-18T00:00:00+00:00",
+      "updated_at": "2025-09-25T15:59:18.476483+00:00",
+      "title": "Test issue #102",
+      "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/102",
+      "repository": {
+        "name": "dummy-gl-sdk",
+        "owner": "GDP-ADMIN"
+      },
+      "comments": 2
+    }
+  }
+}

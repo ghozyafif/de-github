@@ -1,0 +1,28 @@
+{
+  "response_fields": [
+    "id",
+    "type",
+    "status",
+    "content.title",
+    "content.number",
+    "content.url",
+    "content.repository",
+    "content.assignees",
+    "field_values",
+    "updated_at"
+  ],
+  "organization": "GDP-ADMIN",
+  "number": 223,
+  "per_page": 100,
+  "page": 1,
+  "force_new": false,
+  "type": "ISSUE",
+  "filters": [
+    {
+      "field_name": "Status",
+      "type": "string",
+      "value": "In Review"
+    }
+  ],
+  "summarize": false
+}

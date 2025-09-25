@@ -1,0 +1,94 @@
+# GitHub Issue Compliance Agent Workflow Configuration
+# Version 1.0 - Background Mode (Read-Only)
+
+agent:
+  name: github-compliance-agent
+  version: "1.0.0"
+  mode: background  # Runs once and exits
+  timeout: 300      # 5 minutes max execution time
+
+project:
+  id: "GDP-ADMIN/223"
+  name: "GL SDK Project Board"
+  url: "https://github.com/orgs/GDP-ADMIN/projects/223"
+
+sampling:
+  strategy: "fixed_per_status"
+  issues_per_status: 5
+  statuses:
+    - "Todo"
+    - "In Progress"
+    - "In Review"
+  total_issues: 15
+
+mcp_integration:
+  provider: "BOSA"
+  base_url: "https://api.bosa.id/github/mcp"
+  functions:
+    - github_list_project_items
+    - github_get_issue_handler
+    - github_list_issues_comments
+
+compliance_rules:
+  - id: 1
+    name: "Empty Assignees"
+    severity: "medium"
+    description: "Issue has no assignees"
+
+  - id: 2
+    name: "Empty Incoming Date"
+    severity: "medium"
+    description: "Missing 'Incoming Date' field"
+
+  - id: 3
+    name: "Empty Due Date"
+    severity: "medium"
+    description: "Missing 'Due Date' field"
+
+  - id: 4
+    name: "Empty Status"
+    severity: "medium"
+    description: "Invalid or missing status"
+
+  - id: 5
+    name: "Missing Pak On Approval (Overdue)"
+    severity: "high"
+    description: "Missing approval when >7 days from incoming date"
+
+  - id: 6
+    name: "Due Soon Warning"
+    severity: "high"
+    description: "Issue due within next 7 days"
+
+  - id: 7
+    name: "No Recent Updates"
+    severity: "medium"
+    description: "No human comments for >7 days"
+
+timezone: "Asia/Jakarta"  # UTC+7
+
+output:
+  format: "terminal_json"
+  pretty_print: true
+  include_recommendations: true
+  include_compliant_issues: true
+  max_compliant_shown: 5
+
+error_handling:
+  retry_attempts: 3
+  retry_delay: 2  # seconds
+  exponential_backoff: true
+  partial_results_on_failure: true
+
+performance:
+  target_execution_time: 120  # 2 minutes
+  max_memory_mb: 100
+  optimize_mcp_calls: true
+
+# Future v2.0 features (not implemented in v1.0)
+v2_features:
+  write_capabilities: false
+  post_comments: false
+  scheduled_execution: false
+  comment_throttling: false
+  idempotency_keys: false
