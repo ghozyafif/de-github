@@ -4,7 +4,7 @@
 # Get repository root, with fallback for non-git repositories
 get_repo_root() {
     if git rev-parse --show-toplevel >/dev/null 2>&1; then
-        echo "$(git rev-parse --show-toplevel)/de-github"
+        echo "$(git rev-parse --show-toplevel)"
     else
         # Fall back to script location for non-git repos
         local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

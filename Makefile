@@ -29,7 +29,7 @@ update:
 .PHONY: test
 test:
 	@echo "Running tests..."
-	@poetry run python -m pytest -n 4 tests
+	@poetry run python -m pytest tests/ -v
 
 inspector:
 	DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector
