@@ -119,7 +119,7 @@ def github_report_generator_tool(
         Formatted JSON string for terminal output
     """
     # Calculate execution time
-    if execution_start_time and execution_end_time:
+    if execution_start_time is not None and execution_end_time is not None:
         execution_time = format_execution_time(execution_start_time, execution_end_time)
     else:
         execution_time = "Not measured"

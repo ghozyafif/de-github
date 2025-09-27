@@ -37,13 +37,21 @@
 
 **Steps**:
 
-1. Create directory structure: `src/services/`, `tests/unit/`, `tests/integration/`, `tests/fixtures/mcp/`
+1. Create modular directory structure:
+   - `src/utils/` for shared utilities (timezone, bot detection)
+   - `src/services/compliance_rules/` for individual rule implementations
+   - `src/services/` for orchestrators (evaluator, report generator)
+   - `tests/unit/`, `tests/integration/`, `tests/fixtures/mcp/`
 2. Create placeholder `README.md`, `.gitignore`, `requirements.txt`
 3. Set up Python 3.11+ virtual environment
 
 **Outputs**:
 
+- `src/utils/__init__.py`
+- `src/utils/timezone_utils.py` (empty placeholder)
+- `src/utils/bot_detection.py` (empty placeholder)
 - `src/services/__init__.py`
+- `src/services/compliance_rules/__init__.py`
 - `tests/unit/__init__.py`
 - `tests/integration/__init__.py`
 - `tests/fixtures/mcp/` (directory)
@@ -131,7 +139,7 @@
 
 ## Phase 2 — Core Implementation (T-04 to T-06)
 
-### T-04 [X] Single-File Compliance Evaluator
+### T-04 [X] Modular Compliance Architecture
 
 **Type**: Code
 **DependsOn**: [T-03]
@@ -140,49 +148,67 @@
 
 **Inputs**:
 
-- `spec.md` FR-003 (7 compliance rules)
-- `plan.md` §Technical Implementation Details
+- `spec.md` FR-003 (7 compliance rules with exact field names and logic)
+- `plan.md` §SOLID Compliance Rule Architecture
 - `contracts/gllm_plugin_tools.md`
 
 **Steps**:
 
-1. Create `src/services/compliance_evaluator.py` as single self-contained file
-2. Add inline timezone utilities (no imports from lib/):
+1. Implement timezone utilities in `src/utils/timezone_utils.py`:
    ```python
-   def to_jakarta_timezone(iso_string: str) -> datetime:
-       # Asia/Jakarta conversion inline
-
+   def to_jakarta_timezone(iso_string: str) -> Optional[datetime]:
+       # Asia/Jakarta conversion with error handling
    def calculate_days_difference(start_date, end_date) -> int:
-       # Calendar days calculation inline
+       # Calendar days calculation for 7-day rules
    ```
-3. Add inline bot filtering:
+2. Implement bot detection in `src/utils/bot_detection.py`:
    ```python
-   BOT_PATTERNS = [r'.*\[bot\]$', ...]
-
-   def is_bot_comment(username: str) -> bool:
-       # Bot detection inline
+   BOT_PATTERNS = [r'.*\[bot\]$', r'^(github-actions|dependabot)', ...]
+   def is_bot_comment(username: str, body: str) -> bool:
+       # Rule #7: Filter bot/system comments
+   def filter_human_comments(comments: List[dict]) -> List[dict]:
+       # Extract only human comments for recency check
    ```
-4. Implement all 7 compliance rules as functions
-5. Create main GLLM Plugin tool function:
+3. Create base rule interface in `src/services/compliance_rules/base_rule.py`:
    ```python
-   @tool
-   def github_compliance_evaluator_tool(
-       issues: List[Dict],
-       comments_by_issue: Dict[int, List[Dict]]
-   ) -> Dict:
-       # Returns violations and summary
+   class ComplianceRule(ABC):
+       @abstractmethod
+       def evaluate(issue, comments) -> ViolationResult
    ```
-6. Add comprehensive docstrings and type hints
+4. Implement individual rule classes (SRP compliance):
+   - `rule_empty_assignees.py` - Rule 1: Check content.assignees array
+   - `rule_empty_dates.py` - Rules 2,3: Check field_values["Incoming Date"], ["Due Date"]
+   - `rule_missing_approval.py` - Rule 5: Check field_values["Pak On's Approval for Timeline"]
+   - `rule_overdue_warning.py` - Rule 6: 7-day due date warning using Asia/Jakarta timezone
+   - `rule_no_updates.py` - Rule 7: Human comments in last 7 days using bot filtering
+5. Create orchestrator in `src/services/compliance_evaluator.py`:
+   ```python
+   class ComplianceEvaluator:
+       def __init__(self): self.rules = [all 7 rule instances]
+       def evaluate_issue_compliance(issue, comments) -> List[ViolationResult]
+   ```
+6. Add comprehensive docstrings and type hints throughout
 
 **Outputs**:
 
-- `src/services/compliance_evaluator.py` (400-500 lines, fully self-contained)
+- `src/utils/timezone_utils.py` (100 lines, Asia/Jakarta handling)
+- `src/utils/bot_detection.py` (80 lines, GitHub bot patterns)
+- `src/services/compliance_rules/base_rule.py` (50 lines, interface)
+- `src/services/compliance_rules/rule_*.py` (7 files, 50-80 lines each)
+- `src/services/compliance_evaluator.py` (150 lines, orchestrator)
 
 **Acceptance Criteria**:
 
-- GIVEN single file, WHEN imported, THEN no external dependencies (except GLLM)
-- GIVEN 15 test issues, WHEN evaluated, THEN all 7 rules work correctly
-- GIVEN inline utilities, WHEN tested, THEN timezone and bot filtering work
+- GIVEN modular architecture, WHEN imported, THEN proper separation of concerns
+- GIVEN 15 test issues, WHEN evaluated, THEN all 7 rules work with exact field mappings:
+  - Rule 1: content.assignees array emptiness
+  - Rule 2: field_values["Incoming Date"] presence
+  - Rule 3: field_values["Due Date"] presence
+  - Rule 4: field_values["Status"] presence
+  - Rule 5: field_values["Pak On's Approval for Timeline"] + 7-day check
+  - Rule 6: Due in next 7 days using Asia/Jakarta timezone
+  - Rule 7: Human comments (excluding bots) in last 7 days
+- GIVEN rule interface, WHEN new rule added, THEN extensible without modification (OCP)
 
 ---
 
@@ -234,20 +260,31 @@
 
 **Steps**:
 
-1. Create `tests/unit/test_compliance_evaluator.py`:
-   - Test all 7 rules individually
-   - Test inline timezone utilities
-   - Test inline bot filtering
-   - Test with 15-issue fixtures
-2. Create `tests/unit/test_report_generator.py`:
-   - Test JSON formatting
-   - Test violation details
+1. Create utility tests:
+   - `tests/unit/test_timezone_utils.py`: Asia/Jakarta conversion edge cases
+   - `tests/unit/test_bot_detection.py`: GitHub bot patterns validation
+2. Create rule tests `tests/unit/test_compliance_rules.py`:
+   - Test each of 7 rules individually with exact field mappings
+   - Test Rule 1: content.assignees array scenarios
+   - Test Rules 2,3: field_values date field presence
+   - Test Rule 5: "Pak On's Approval for Timeline" + 7-day logic
+   - Test Rule 6: Due date warning with Asia/Jakarta timezone
+   - Test Rule 7: Human vs bot comment filtering
+3. Create orchestrator tests `tests/unit/test_compliance_evaluator.py`:
+   - Test rule registry and evaluation workflow
+   - Test with 15-issue fixtures covering all violation scenarios
+4. Create `tests/unit/test_report_generator.py`:
+   - Test JSON formatting with error handling schema
+   - Test violation details structure
    - Test summary calculations
-3. Run `poetry run pytest tests/unit/ -v`
-4. Achieve 80% code coverage
+5. Run `poetry run pytest tests/unit/ -v`
+6. Achieve 80% code coverage
 
 **Outputs**:
 
+- `tests/unit/test_timezone_utils.py`
+- `tests/unit/test_bot_detection.py`
+- `tests/unit/test_compliance_rules.py`
 - `tests/unit/test_compliance_evaluator.py`
 - `tests/unit/test_report_generator.py`
 
@@ -398,10 +435,11 @@
 **Steps**:
 
 1. Run against live GDP-ADMIN/223 project
-2. Verify 15 issues sampled (5 per status)
-3. Confirm terminal JSON output
-4. Validate all 7 rules evaluated
-5. Document execution time (<2 minutes target)
+2. Verify 15 issues sampled with stratified sampling (5 per status: "In Progress", "In Review", "Todo")
+3. Confirm terminal JSON output matches schema with all required fields
+4. Validate all 7 rules evaluated with proper field mappings (content.assignees, field_values exact names)
+5. Document execution time (<2 minutes target) and memory usage (<100MB)
+6. Verify sampling representativeness: each status category adequately covered for compliance assessment
 
 **Outputs**:
 
@@ -419,14 +457,17 @@
 ## Dependencies Summary
 
 **Phase Dependencies**:
+
 - Foundation (T-01 → T-03) → Core (T-04 → T-06)
 - Core → Integration (T-07 → T-09)
 - Integration → Deployment (T-10 → T-11)
 
 **Critical Path**:
+
 - T-01 → T-03 → T-04 → T-07 → T-10 → T-11
 
 **Parallel Opportunities**:
+
 - T-01, T-02, T-03 can run together
 - T-06 can start once T-04/T-05 complete
 

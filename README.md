@@ -60,15 +60,15 @@ poetry run pytest tests/ -v
 └── pyproject.toml                   # Poetry dependencies
 ```
 
-## Compliance Rules
+## 7 Compliance Rules
 
-1. **Maximum Draft Duration**: Draft issues must be ready within 5 days
-2. **Maximum Todo Duration**: Todo issues must start within 5 days
-3. **Maximum In Progress Duration**: In Progress issues must complete within 8 days
-4. **Maximum In Review Duration**: In Review issues must complete within 5 days
-5. **Maximum Done Duration**: Done issues must be closed within 3 days
-6. **Comment Frequency**: Active issues need comments every 3 days
-7. **Bot Comments**: Bot/system comments don't count for activity
+1. **Empty Assignees**: Issue has no assignees in content.assignees array
+2. **Empty Incoming Date**: Missing "Incoming Date" field in field_values
+3. **Empty Due Date**: Missing "Due Date" field in field_values
+4. **Empty Status**: Missing or invalid "Status" field in field_values
+5. **Missing Pak On Approval (Overdue)**: "Pak On's Approval for Timeline" field empty AND more than 7 days since incoming date
+6. **Due Soon Warning**: Issue will be due within next 7 days (using Asia/Jakarta timezone)
+7. **No Recent Updates**: No human comments (excluding bot/system comments) in last 7 days
 
 ## Usage
 

@@ -33,7 +33,7 @@
 
 ## Summary
 
-**v1.0 PoC (Background Agent Read-Only)**: Automated GitHub Project compliance agent that runs in background mode, checks 15 sampled issues (5 per status) against 7 defined rules, and outputs a comprehensive JSON report to terminal. Uses company Agentic AI platform with Claude Sonnet 4, MCP integration for GitHub Projects v2, and self-contained Python GLLM Plugin tools (no imports, all utilities inline). **No file storage or write operations** - terminal output only.
+**v1.0 PoC (Background Agent Read-Only)**: Automated GitHub Project compliance background agent that runs in automated mode, checks 15 sampled issues (5 per status) against 7 defined rules, and outputs a comprehensive JSON report to terminal. Uses company Agentic AI platform with Claude Sonnet 4, MCP integration for GitHub Projects v2, and self-contained Python GLLM Plugin tools with modular SOLID-compliant architecture. **No file storage or write operations** - terminal output only.
 
 **v2.0 Full (Write-Capable)**: [FUTURE] Extends v1 with automated comment posting and scheduled execution capabilities.
 
@@ -52,44 +52,293 @@
 
 ## Technical Implementation Details
 
+### Modular Architecture Design (SOLID Compliance)
+
+```
+src/
+├── utils/                    # Shared utilities (DRY principle)
+│   ├── __init__.py
+│   ├── timezone_utils.py     # Asia/Jakarta timezone handling
+│   └── bot_detection.py      # Bot comment filtering patterns
+├── services/                 # Business logic layer
+│   ├── __init__.py
+│   ├── compliance_rules/     # Individual rule implementations (SRP)
+│   │   ├── __init__.py
+│   │   ├── base_rule.py      # Rule interface (DIP)
+│   │   ├── rule_empty_assignees.py
+│   │   ├── rule_empty_dates.py
+│   │   ├── rule_missing_approval.py
+│   │   └── rule_overdue_warning.py
+│   ├── compliance_evaluator.py  # Rule orchestrator (OCP)
+│   └── report_generator.py      # Terminal JSON formatting
+└── cli/                     # Optional test orchestrator
+    └── orchestrator.py
+```
+
 ### Timezone Handling (Asia/Jakarta UTC+7)
 
 ```python
-# Using zoneinfo (Python 3.9+) or pytz fallback
+# src/utils/timezone_utils.py - Extracted for maintainability
 from zoneinfo import ZoneInfo
 from datetime import datetime
+from typing import Optional
 
-def to_jakarta_timezone(iso_string: str) -> datetime:
-    """Convert ISO 8601 string to Asia/Jakarta timezone"""
-    dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
-    return dt.astimezone(ZoneInfo('Asia/Jakarta'))
+def to_jakarta_timezone(iso_string: str) -> Optional[datetime]:
+    """Convert ISO 8601 string to Asia/Jakarta timezone
+
+    Args:
+        iso_string: ISO 8601 formatted date string
+
+    Returns:
+        datetime object in Asia/Jakarta timezone or None if invalid
+
+    Example:
+        >>> to_jakarta_timezone("2025-09-24T12:00:00Z")
+        datetime(2025, 9, 24, 19, 0, tzinfo=ZoneInfo('Asia/Jakarta'))
+    """
+    try:
+        if not iso_string:
+            return None
+        dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
+        return dt.astimezone(ZoneInfo('Asia/Jakarta'))
+    except (ValueError, TypeError):
+        return None
 
 def calculate_days_difference(start_date: datetime, end_date: datetime) -> int:
-    """Calculate calendar days difference in Jakarta timezone"""
+    """Calculate calendar days difference in Jakarta timezone
+
+    Args:
+        start_date: Start date in Jakarta timezone
+        end_date: End date in Jakarta timezone
+
+    Returns:
+        Number of calendar days between dates
+    """
     return (end_date.date() - start_date.date()).days
+
+def is_within_days(target_date: datetime, reference_date: datetime, days: int) -> bool:
+    """Check if target_date is within specified days of reference_date"""
+    return abs(calculate_days_difference(reference_date, target_date)) <= days
 ```
 
 ### Bot Comment Filtering (Rule #7)
 
 ```python
-# Bot detection patterns
-BOT_PATTERNS = [
+# src/utils/bot_detection.py - Extracted for reusability
+import re
+from typing import List
+
+# Bot detection patterns for GitHub ecosystem
+BOT_PATTERNS: List[str] = [
     r'.*\[bot\]$',  # GitHub bots ending with [bot]
     r'^(github-actions|dependabot|renovate|codecov)\[bot\]$',  # Common bots
     r'^(Automatically (closed|merged)|This (issue|PR) has been)',  # System messages
+    r'^(Co-authored-by:|Signed-off-by:)',  # Git commit metadata
 ]
 
 def is_bot_comment(username: str, body: str) -> bool:
-    """Detect if comment is from bot/system"""
-    import re
+    """Detect if comment is from bot/system
+
+    Args:
+        username: Comment author username
+        body: Comment text content
+
+    Returns:
+        True if comment appears to be from bot/system
+
+    Example:
+        >>> is_bot_comment("github-actions[bot]", "This PR has been merged")
+        True
+        >>> is_bot_comment("john-doe", "Looks good to me")
+        False
+    """
+    if not username or not body:
+        return True
+
     # Check username patterns
     for pattern in BOT_PATTERNS:
         if re.match(pattern, username, re.IGNORECASE):
             return True
-    # Check for emoji-only comments
-    if re.match(r'^[\s\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+$', body):
+
+    # Check for emoji-only comments (likely reactions)
+    if re.match(r'^[\s\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+$', body.strip()):
         return True
+
+    # Check for very short automated responses
+    if len(body.strip()) < 10 and any(word in body.lower() for word in ['merged', 'closed', 'auto']):
+        return True
+
     return False
+
+def filter_human_comments(comments: List[dict]) -> List[dict]:
+    """Filter list to only include human comments
+
+    Args:
+        comments: List of comment objects with 'user' and 'body' fields
+
+    Returns:
+        Filtered list containing only human comments
+    """
+    return [
+        comment for comment in comments
+        if not is_bot_comment(
+            comment.get('user', {}).get('login', ''),
+            comment.get('body', '')
+        )
+    ]
+```
+
+### SOLID Compliance Rule Architecture
+
+```python
+# src/services/compliance_rules/base_rule.py - Interface Segregation + Dependency Inversion
+from abc import ABC, abstractmethod
+from typing import Dict, List, Any, Optional
+from dataclasses import dataclass
+
+@dataclass
+class ViolationResult:
+    """Standardized violation result structure"""
+    rule_number: int
+    rule_name: str
+    description: str
+    severity: str  # 'high', 'medium', 'low'
+    violated: bool
+    details: Optional[Dict[str, Any]] = None
+
+class ComplianceRule(ABC):
+    """Base interface for all compliance rules (ISP principle)"""
+
+    @property
+    @abstractmethod
+    def rule_number(self) -> int:
+        """Unique rule identifier (1-7)"""
+        pass
+
+    @property
+    @abstractmethod
+    def rule_name(self) -> str:
+        """Human-readable rule name"""
+        pass
+
+    @property
+    @abstractmethod
+    def severity(self) -> str:
+        """Rule violation severity level"""
+        pass
+
+    @abstractmethod
+    def evaluate(self, issue: Dict[str, Any], comments: List[Dict[str, Any]]) -> ViolationResult:
+        """Evaluate rule against issue and comments
+
+        Args:
+            issue: GitHub issue object with content and field_values
+            comments: List of issue comments
+
+        Returns:
+            ViolationResult indicating compliance status
+        """
+        pass
+
+# src/services/compliance_rules/rule_empty_assignees.py - Single Responsibility
+from .base_rule import ComplianceRule, ViolationResult
+
+class EmptyAssigneesRule(ComplianceRule):
+    """Rule 1: Check for empty assignees field"""
+
+    @property
+    def rule_number(self) -> int:
+        return 1
+
+    @property
+    def rule_name(self) -> str:
+        return "Empty assignees field"
+
+    @property
+    def severity(self) -> str:
+        return "high"
+
+    def evaluate(self, issue: Dict[str, Any], comments: List[Dict[str, Any]]) -> ViolationResult:
+        """Check if issue has assignees in content.assignees array"""
+        assignees = issue.get('content', {}).get('assignees', [])
+        violated = not assignees or len(assignees) == 0
+
+        return ViolationResult(
+            rule_number=self.rule_number,
+            rule_name=self.rule_name,
+            description=self.rule_name,
+            severity=self.severity,
+            violated=violated,
+            details={'assignees_count': len(assignees) if assignees else 0}
+        )
+
+# Additional rule implementations follow same pattern...
+```
+
+### Compliance Evaluator (Open/Closed Principle)
+
+```python
+# src/services/compliance_evaluator.py - Rule registry for extensibility
+from typing import Dict, List, Any
+from .compliance_rules import (
+    EmptyAssigneesRule, EmptyDatesRule, MissingApprovalRule,
+    OverdueWarningRule, NoRecentUpdatesRule
+)
+from ..utils.timezone_utils import to_jakarta_timezone
+from ..utils.bot_detection import filter_human_comments
+
+class ComplianceEvaluator:
+    """Orchestrates compliance rule evaluation (OCP compliant)"""
+
+    def __init__(self):
+        # Rule registry - easily extensible for new rules
+        self.rules = [
+            EmptyAssigneesRule(),
+            EmptyDatesRule(),
+            MissingApprovalRule(),
+            OverdueWarningRule(),
+            NoRecentUpdatesRule()
+        ]
+
+    def evaluate_issue_compliance(
+        self,
+        issue: Dict[str, Any],
+        comments: List[Dict[str, Any]]
+    ) -> List[ViolationResult]:
+        """Evaluate single issue against all registered rules
+
+        Args:
+            issue: GitHub issue object
+            comments: Issue comments list
+
+        Returns:
+            List of violation results from all rules
+        """
+        # Filter human comments for Rule 7 evaluation
+        human_comments = filter_human_comments(comments)
+
+        violations = []
+        for rule in self.rules:
+            try:
+                result = rule.evaluate(issue, human_comments)
+                violations.append(result)
+            except Exception as e:
+                # Graceful degradation - log error but continue
+                violations.append(ViolationResult(
+                    rule_number=rule.rule_number,
+                    rule_name=rule.rule_name,
+                    description=f"Rule evaluation failed: {str(e)}",
+                    severity="medium",
+                    violated=False,
+                    details={'error': str(e)}
+                ))
+
+        return violations
+
+    def add_rule(self, rule: ComplianceRule) -> None:
+        """Add new compliance rule (OCP - open for extension)"""
+        self.rules.append(rule)
+        self.rules.sort(key=lambda r: r.rule_number)
 ```
 
 ### Error Handling and Rate Limiting
@@ -361,8 +610,8 @@ Copy-ready configuration block for the Agentic AI Platform agent creation form:
 ```yaml
 Version: 1.0.0 (PoC - Read-Only)
 Agent ID: github_issue_compliance_agent_v1
-Display Name: GitHub Issue Compliance Agent (PoC)
-Description: Agent that audits a GitHub Project for 7 compliance rules and generates read-only reports
+Display Name: GitHub Issue Compliance Background Agent (PoC)
+Description: Background agent that audits a GitHub Project for 7 compliance rules and generates read-only reports
 Model: Claude Sonnet 4
 Tools:
   - MCP: github_projects_v2 (read-only: lists, details, comments)
@@ -371,7 +620,7 @@ Tools:
       - github_get_issue_handler(owner, repo, issue_number)
       - github_list_issues_comments(owner, repo, issue_number)
 
-  - GLLM Python Plugin Tools (self-contained, no imports):
+  - GLLM Python Plugin Tools (modular SOLID-compliant architecture):
       - github_merge_tool(mcp_list_payload_results) [existing]
       - github_formatter_tool(issues, project_number) [existing]
       - github_compliance_evaluator_tool(issues, comments_by_issue)
@@ -379,7 +628,7 @@ Tools:
 Timeout (seconds): 720
 Chat History Limit: 20
 System Instructions: |
-  You are a GitHub Project compliance monitoring agent (v1.0 PoC - Read-Only). Your role is to:
+  You are a GitHub Project compliance monitoring background agent (v1.0 PoC - Read-Only). Your role is to:
   1. Check GitHub Project issues for compliance with 7 defined rules
   2. Generate summary reports of violations
   3. Respond to queries about compliance status
@@ -397,13 +646,13 @@ System Instructions: |
   - Support interactive queries about specific violations
 
   COMPLIANCE RULES:
-  1. Empty assignees field
-  2. Empty incoming date field
-  3. Empty due date field
-  4. Empty status field
+  1. Empty assignees field (content.assignees array)
+  2. Empty incoming date field (field_values["Incoming Date"])
+  3. Empty due date field (field_values["Due Date"])
+  4. Empty status field (field_values["Status"])
   5. Empty "Pak On's Approval for Timeline" field AND more than 7 days from incoming date
   6. Will be due in next 7 days (warning)
-  7. No human comments in last 7 days
+  7. No human comments in last 7 days (excluding bot/system comments)
 
   GUARDRAILS:
   - Never modify issue statuses or field values
@@ -458,6 +707,36 @@ System Instructions: |
   ],
   "execution_status": "completed",
   "next_action": "Review high-priority violations above"
+}
+```
+
+### Error Response Schema
+
+```json
+{
+  "execution_time": "45 seconds",
+  "generated_at": "2025-09-24T08:00:00+07:00",
+  "project": "GDP-ADMIN/223",
+  "execution_status": "partial_failure",
+  "errors": [
+    {
+      "type": "mcp_timeout",
+      "message": "Failed to fetch comments for issue #534 after 3 retries",
+      "affected_issues": [534],
+      "severity": "medium"
+    }
+  ],
+  "issues_sampled": 12,
+  "issues_failed": 3,
+  "partial_results": {
+    "compliance_summary": {
+      "compliant_issues": 5,
+      "violating_issues": 7,
+      "compliance_rate": 0.417,
+      "data_completeness": 0.8
+    }
+  },
+  "next_action": "Retry failed issues or proceed with partial results"
 }
 ```
 
