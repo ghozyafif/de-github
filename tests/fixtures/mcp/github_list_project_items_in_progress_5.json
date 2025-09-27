@@ -1,0 +1,156 @@
+{
+  "result": {
+    "data": [
+      {
+        "id": "PVTI_progress_001",
+        "type": "ISSUE",
+        "title": "Refactor payment service",
+        "status": "In Progress",
+        "content": {
+          "title": "Refactor payment service",
+          "body": "Migrate payment processing to new provider",
+          "number": 201,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/201",
+          "labels": ["backend"],
+          "assignees": ["developer6"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Progress",
+            "field_type": "single_select",
+            "option_id": "progress_01"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-15T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_progress_002",
+        "type": "ISSUE",
+        "title": "Mobile app UI redesign",
+        "status": "In Progress",
+        "content": {
+          "title": "Mobile app UI redesign",
+          "body": "Implement new design system for mobile app",
+          "number": 202,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/202",
+          "labels": ["mobile", "ui"],
+          "assignees": ["developer7"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Progress",
+            "field_type": "single_select",
+            "option_id": "progress_02"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-10T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_progress_003",
+        "type": "ISSUE",
+        "title": "API rate limiting implementation",
+        "status": "In Progress",
+        "content": {
+          "title": "API rate limiting implementation",
+          "body": "Add rate limiting to prevent API abuse",
+          "number": 203,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/203",
+          "labels": ["security"],
+          "assignees": ["developer8"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Progress",
+            "field_type": "single_select",
+            "option_id": "progress_03"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-18T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_progress_004",
+        "type": "ISSUE",
+        "title": "Data analytics dashboard",
+        "status": "In Progress",
+        "content": {
+          "title": "Data analytics dashboard",
+          "body": "Create real-time analytics dashboard",
+          "number": 204,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/204",
+          "labels": ["analytics"],
+          "assignees": ["developer9"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Progress",
+            "field_type": "single_select",
+            "option_id": "progress_04"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-05T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      },
+      {
+        "id": "PVTI_progress_005",
+        "type": "ISSUE",
+        "title": "Testing framework upgrade",
+        "status": "In Progress",
+        "content": {
+          "title": "Testing framework upgrade",
+          "body": "Migrate from Jest to Vitest",
+          "number": 205,
+          "state": "OPEN",
+          "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/205",
+          "labels": ["testing"],
+          "assignees": ["developer10"],
+          "milestone": null,
+          "repository": "dummy-gl-sdk"
+        },
+        "field_values": [
+          {
+            "name": "Status",
+            "value": "In Progress",
+            "field_type": "single_select",
+            "option_id": "progress_05"
+          },
+          {
+            "name": "Start date",
+            "value": "2025-09-22T00:00:00",
+            "field_type": "date"
+          }
+        ]
+      }
+    ]
+  }
+}

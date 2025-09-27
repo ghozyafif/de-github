@@ -1,0 +1,60 @@
+{
+  "result": {
+    "data": {
+      "id": "I_kwDOL-78q8_in_review_301",
+      "assignees": [
+        "developer2"
+      ],
+      "number": 301,
+      "body": "Issue body for #301",
+      "state": "OPEN",
+      "closed_at": null,
+      "closed_by": null,
+      "labels": [
+        "automated-test"
+      ],
+      "milestone": null,
+      "project_details": {
+        "project_items": [
+          {
+            "id": "PVTI_in_review_301",
+            "type": "ISSUE",
+            "created_at": "2025-09-10T00:00:00+00:00",
+            "updated_at": "2025-09-25T15:59:18.482885+00:00",
+            "field_values": [
+              {
+                "name": "Status",
+                "value": "In Review",
+                "field_type": "single_select",
+                "option_id": "review_01"
+              },
+              {
+                "name": "Start date",
+                "value": "2025-09-10T00:00:00",
+                "field_type": "date"
+              }
+            ]
+          }
+        ],
+        "projects": [
+          {
+            "id": "PVT_kwDOACQejc4AvWAd",
+            "number": 223,
+            "title": "GL SDK Project Board",
+            "url": "https://github.com/orgs/GDP-ADMIN/projects/223"
+          }
+        ]
+      },
+      "author": "developer2",
+      "created_at": "2025-09-10T00:00:00+00:00",
+      "updated_at": "2025-09-25T15:59:18.482898+00:00",
+      "title": "Test issue #301",
+      "url": "https://github.com/GDP-ADMIN/dummy-gl-sdk/issues/301",
+      "repository": {
+        "name": "dummy-gl-sdk",
+        "owner": "GDP-ADMIN"
+      },
+      "comments": 4
+    }
+  }
+}

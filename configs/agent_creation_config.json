@@ -1,0 +1,58 @@
+{
+  "agent": {
+    "name": "github-compliance-agent-v1",
+    "display_name": "GitHub Issue Compliance Agent (v1.0 PoC)",
+    "instruction": "",
+    "model": "claude-sonnet-4",
+    "timeout": 720,
+    "tools": [
+      "github_merge_tool",
+      "github_formatter_tool",
+      "github_compliance_evaluator_tool",
+      "github_report_generator_tool"
+    ],
+    "mcps": ["bosa-github-mcp"],
+    "chat_history_limit": 20
+  },
+  "mcp": {
+    "name": "bosa-github-mcp",
+    "url": "https://api.bosa.id/github/mcp",
+    "api_key_env": "BOSA_API_KEY_CLIENT",
+    "auth_token_env": "BOSA_USER_SECRET",
+    "organization": "GDP-ADMIN",
+    "project_number": 223,
+    "functions": [
+      "github_list_project_items",
+      "github_get_issue_handler",
+      "github_list_issues_comments"
+    ],
+    "rate_limit_per_minute": 60,
+    "retry_max": 3,
+    "backoff_base": 2
+  },
+  "environment": {
+    "required_env_vars": {
+      "BOSA_API_KEY_CLIENT": "Your BOSA API key for client authentication",
+      "BOSA_USER_SECRET": "Your BOSA user secret token",
+      "AIP_API_URL": "Your AIP instance URL (e.g., https://your-aip-instance.com)",
+      "AIP_API_KEY": "Your AIP API key"
+    },
+    "optional_env_vars": {
+      "GITHUB_ORGANIZATION": "Override GitHub organization (default: GDP-ADMIN)",
+      "GITHUB_PROJECT_ID": "Override GitHub project number (default: 223)"
+    }
+  },
+  "usage": {
+    "description": "Configuration for GitHub Issue Compliance Agent creation",
+    "examples": {
+      "create_agent": "python create_agent.py --config config.json",
+      "dry_run": "python create_agent.py --config config.json --dry-run",
+      "debug": "python create_agent.py --config config.json --debug"
+    },
+    "next_steps": [
+      "Set required environment variables",
+      "Run: python create_agent.py --config config.json",
+      "Test agent: aip agents run github-compliance-agent-v1 --input 'Check compliance for GDP-ADMIN/223'"
+    ]
+  }
+}
