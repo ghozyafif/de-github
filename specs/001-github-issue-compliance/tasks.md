@@ -6,7 +6,7 @@
 ## Execution Flow (main)
 
 ```
-1. Load spec.md → 7 compliance rules, v1.0 background mode, terminal output only
+1. Load spec.md → 6 compliance rules, v1.0 background mode, terminal output only
 2. Load plan.md → Self-contained GLLM Plugin tools, 15-issue sampling strategy
 3. Generate streamlined tasks:
    → Foundation: repo setup, 15-issue fixtures, GLLM environment
@@ -15,7 +15,7 @@
    → Deployment: Platform config, production validation
 4. Apply constraints: No file storage, no lib imports, terminal JSON only
 5. Use Poetry for all installation: `poetry install`, `poetry run pytest`
-6. Validate all 7 rules with 15-issue test dataset
+6. Validate all 6 rules with 15-issue test dataset
 7. Return: 11 streamlined tasks ready for execution
 ```
 
@@ -38,7 +38,7 @@
 **Steps**:
 
 1. Create modular directory structure:
-   - `src/utils/` for shared utilities (timezone, bot detection)
+   - `src/utils/` for shared utilities (timezone)
    - `src/services/compliance_rules/` for individual rule implementations
    - `src/services/` for orchestrators (evaluator, report generator)
    - `tests/unit/`, `tests/integration/`, `tests/fixtures/mcp/`
@@ -49,7 +49,6 @@
 
 - `src/utils/__init__.py`
 - `src/utils/timezone_utils.py` (empty placeholder)
-- `src/utils/bot_detection.py` (empty placeholder)
 - `src/services/__init__.py`
 - `src/services/compliance_rules/__init__.py`
 - `tests/unit/__init__.py`
@@ -85,7 +84,7 @@
 3. Create `github_list_project_items_todo_5.json` with 5 issues
 4. Create 15 `github_get_issue_handler_[number].json` files
 5. Create 15 `github_list_issues_comments_[number].json` files
-6. Ensure coverage of all 7 rules across the 15 issues
+6. Ensure coverage of all 6 rules across the 15 issues
 
 **Outputs**:
 
@@ -98,7 +97,7 @@
 **Acceptance Criteria**:
 
 - GIVEN 15-issue dataset, WHEN loaded, THEN all required fields present
-- GIVEN rule coverage, WHEN analyzed, THEN all 7 rules have test cases
+- GIVEN rule coverage, WHEN analyzed, THEN all 6 rules have test cases
 - GIVEN bot comments, WHEN included, THEN human vs bot distinguishable
 
 ---
@@ -161,53 +160,42 @@
    def calculate_days_difference(start_date, end_date) -> int:
        # Calendar days calculation for 7-day rules
    ```
-2. Implement bot detection in `src/utils/bot_detection.py`:
-   ```python
-   BOT_PATTERNS = [r'.*\[bot\]$', r'^(github-actions|dependabot)', ...]
-   def is_bot_comment(username: str, body: str) -> bool:
-       # Rule #7: Filter bot/system comments
-   def filter_human_comments(comments: List[dict]) -> List[dict]:
-       # Extract only human comments for recency check
-   ```
-3. Create base rule interface in `src/services/compliance_rules/base_rule.py`:
+2. Create base rule interface in `src/services/compliance_rules/base_rule.py`:
    ```python
    class ComplianceRule(ABC):
        @abstractmethod
-       def evaluate(issue, comments) -> ViolationResult
+       def evaluate(issue) -> ViolationResult
    ```
-4. Implement individual rule classes (SRP compliance):
+3. Implement individual rule classes (SRP compliance):
    - `rule_empty_assignees.py` - Rule 1: Check content.assignees array
    - `rule_empty_dates.py` - Rules 2,3: Check field_values["Incoming Date"], ["Due Date"]
    - `rule_missing_approval.py` - Rule 5: Check field_values["Pak On's Approval for Timeline"]
    - `rule_overdue_warning.py` - Rule 6: 7-day due date warning using Asia/Jakarta timezone
-   - `rule_no_updates.py` - Rule 7: Human comments in last 7 days using bot filtering
-5. Create orchestrator in `src/services/compliance_evaluator.py`:
+4. Create orchestrator in `src/services/compliance_evaluator.py`:
    ```python
    class ComplianceEvaluator:
-       def __init__(self): self.rules = [all 7 rule instances]
-       def evaluate_issue_compliance(issue, comments) -> List[ViolationResult]
+       def __init__(self): self.rules = [all 6 rule instances]
+       def evaluate_issue_compliance(issue) -> List[ViolationResult]
    ```
-6. Add comprehensive docstrings and type hints throughout
+5. Add comprehensive docstrings and type hints throughout
 
 **Outputs**:
 
 - `src/utils/timezone_utils.py` (100 lines, Asia/Jakarta handling)
-- `src/utils/bot_detection.py` (80 lines, GitHub bot patterns)
 - `src/services/compliance_rules/base_rule.py` (50 lines, interface)
-- `src/services/compliance_rules/rule_*.py` (7 files, 50-80 lines each)
+- `src/services/compliance_rules/rule_*.py` (6 files, 50-80 lines each)
 - `src/services/compliance_evaluator.py` (150 lines, orchestrator)
 
 **Acceptance Criteria**:
 
 - GIVEN modular architecture, WHEN imported, THEN proper separation of concerns
-- GIVEN 15 test issues, WHEN evaluated, THEN all 7 rules work with exact field mappings:
+- GIVEN 15 test issues, WHEN evaluated, THEN all 6 rules work with exact field mappings:
   - Rule 1: content.assignees array emptiness
   - Rule 2: field_values["Incoming Date"] presence
   - Rule 3: field_values["Due Date"] presence
   - Rule 4: field_values["Status"] presence
   - Rule 5: field_values["Pak On's Approval for Timeline"] + 7-day check
   - Rule 6: Due in next 7 days using Asia/Jakarta timezone
-  - Rule 7: Human comments (excluding bots) in last 7 days
 - GIVEN rule interface, WHEN new rule added, THEN extensible without modification (OCP)
 
 ---
@@ -262,14 +250,12 @@
 
 1. Create utility tests:
    - `tests/unit/test_timezone_utils.py`: Asia/Jakarta conversion edge cases
-   - `tests/unit/test_bot_detection.py`: GitHub bot patterns validation
 2. Create rule tests `tests/unit/test_compliance_rules.py`:
-   - Test each of 7 rules individually with exact field mappings
+   - Test each of 6 rules individually with exact field mappings
    - Test Rule 1: content.assignees array scenarios
    - Test Rules 2,3: field_values date field presence
    - Test Rule 5: "Pak On's Approval for Timeline" + 7-day logic
    - Test Rule 6: Due date warning with Asia/Jakarta timezone
-   - Test Rule 7: Human vs bot comment filtering
 3. Create orchestrator tests `tests/unit/test_compliance_evaluator.py`:
    - Test rule registry and evaluation workflow
    - Test with 15-issue fixtures covering all violation scenarios
@@ -283,7 +269,6 @@
 **Outputs**:
 
 - `tests/unit/test_timezone_utils.py`
-- `tests/unit/test_bot_detection.py`
 - `tests/unit/test_compliance_rules.py`
 - `tests/unit/test_compliance_evaluator.py`
 - `tests/unit/test_report_generator.py`
@@ -314,10 +299,11 @@
 
 1. Create `src/cli/orchestrator.py` for testing (optional)
 2. Define workflow:
-   - Call MCP for 5 issues per status (3 calls)
-   - Call MCP for details and comments (30 calls)
-   - Pass to compliance_evaluator tool
-   - Format with report_generator tool
+   - Call MCP github_list_project_items for 5 issues per status with pagination
+   - If has_next=true, fetch additional pages automatically
+   - Pass paginated results to github_merge_tool
+   - Pass merged issues to github_compliance_evaluator_tool (6 rules)
+   - Format with github_report_generator_tool
    - Output to terminal
    - Exit (no interaction)
 3. Add inline error handling
@@ -344,18 +330,18 @@
 
 **Steps**:
 
-1. Add inline retry logic to compliance_evaluator.py:
+1. Add inline retry logic to github_compliance_evaluator_tool:
    ```python
    def retry_with_backoff(func, max_retries=3):
        # Exponential backoff inline
    ```
-2. Handle MCP timeouts gracefully
+2. Handle MCP pagination timeouts gracefully
 3. Handle missing fields in issue data
 4. Return partial results on failure
 
 **Outputs**:
 
-- Updated `src/services/compliance_evaluator.py` with error handling
+- Updated github_compliance_evaluator_tool with error handling
 
 **Acceptance Criteria**:
 

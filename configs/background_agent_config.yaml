@@ -6,17 +6,17 @@ agent:
   version: "1.0.0"
   description: "Automated GitHub Project compliance checking agent"
   type: "background"
-  mode: "one-shot"  # Runs once and exits
+  mode: "one-shot" # Runs once and exits
 
 execution:
-  timeout_seconds: 300  # 5 minutes max
+  timeout_seconds: 300 # 5 minutes max
   memory_limit_mb: 100
   cpu_limit: 1.0
   priority: "normal"
 
 orchestrator:
   model: "claude-sonnet-4"
-  temperature: 0.2  # Low temperature for consistent results
+  temperature: 0.2 # Low temperature for consistent results
   max_tokens: 100000
 
 mcp_connector:
@@ -33,13 +33,6 @@ mcp_connector:
       optional_params:
         - limit
         - cursor
-
-    - name: "github_get_issue_handler"
-      description: "Get detailed issue information"
-      required_params:
-        - owner
-        - repo
-        - issue_number
 
     - name: "github_list_issues_comments"
       description: "List comments for an issue"
@@ -114,7 +107,7 @@ deployment:
     auto_scaling: false
 
   scheduling:
-    enabled: false  # v1.0 is on-demand only
+    enabled: false # v1.0 is on-demand only
     # v2.0 will support: cron: "0 9 * * *"  # Daily at 9 AM Jakarta time
 
   triggers:

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-GitHub Issue Compliance Report Generator Tool
+"""GitHub Issue Compliance Report Generator Tool.
 
 Self-contained GLLM Plugin tool that formats compliance evaluation results
 into terminal-friendly JSON output.
@@ -10,13 +9,17 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+# Constants
+SECONDS_PER_MINUTE = 60
+SECONDS_PER_HOUR = 3600
+
 
 def format_execution_time(start_time: float, end_time: float) -> str:
-    """Format execution time in human-readable format"""
+    """Format execution time in human-readable format."""
     elapsed = end_time - start_time
-    if elapsed < 60:
+    if elapsed < SECONDS_PER_MINUTE:
         return f"{elapsed:.1f} seconds"
-    elif elapsed < 3600:
+    elif elapsed < SECONDS_PER_HOUR:
         minutes = int(elapsed / 60)
         seconds = int(elapsed % 60)
         return f"{minutes} minutes {seconds} seconds"
@@ -27,7 +30,7 @@ def format_execution_time(start_time: float, end_time: float) -> str:
 
 
 def group_violations_by_issue(violations: List[Dict]) -> Dict[int, List[Dict]]:
-    """Group violations by issue number for better organization"""
+    """Group violations by issue number for better organization."""
     grouped = {}
     for violation in violations:
         issue_num = violation.get("issue_number")
@@ -38,7 +41,7 @@ def group_violations_by_issue(violations: List[Dict]) -> Dict[int, List[Dict]]:
 
 
 def calculate_severity_distribution(violations: List[Dict]) -> Dict[str, int]:
-    """Calculate distribution of violations by severity"""
+    """Calculate distribution of violations by severity."""
     distribution = {"high": 0, "medium": 0, "low": 0}
     for violation in violations:
         severity = violation.get("severity", "medium")
@@ -48,7 +51,7 @@ def calculate_severity_distribution(violations: List[Dict]) -> Dict[str, int]:
 
 
 def generate_issue_summary(issue_violations: List[Dict]) -> Dict[str, Any]:
-    """Generate summary for a specific issue with violations"""
+    """Generate summary for a specific issue with violations."""
     if not issue_violations:
         return {}
 
@@ -73,7 +76,7 @@ def generate_issue_summary(issue_violations: List[Dict]) -> Dict[str, Any]:
 
 
 def generate_recommendations(violations_by_rule: Dict[str, int]) -> List[str]:
-    """Generate actionable recommendations based on violations"""
+    """Generate actionable recommendations based on violations."""
     recommendations = []
 
     if violations_by_rule.get("rule_1_empty_assignees", 0) > 0:
@@ -106,8 +109,7 @@ def github_report_generator_tool(
     execution_start_time: Optional[float] = None,
     execution_end_time: Optional[float] = None
 ) -> str:
-    """
-    Main GLLM Plugin tool function for report generation
+    """Main GLLM Plugin tool function for report generation.
 
     Args:
         evaluation_results: Results from compliance evaluator tool
@@ -142,7 +144,7 @@ def github_report_generator_tool(
 
     # Build issue summaries
     issue_summaries = []
-    for issue_num, issue_violations in sorted(grouped_violations.items()):
+    for _, issue_violations in sorted(grouped_violations.items()):
         summary = generate_issue_summary(issue_violations)
         if summary:
             issue_summaries.append(summary)
@@ -193,8 +195,7 @@ def github_report_generator_tool(
 
 
 def generate_summary_report(evaluation_results: Dict[str, Any]) -> str:
-    """
-    Generate a brief summary report (alternative format)
+    """Generate a brief summary report (alternative format).
 
     Args:
         evaluation_results: Results from compliance evaluator tool

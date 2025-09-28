@@ -7,7 +7,7 @@ This document defines custom business logic tools for the GitHub Issue Complianc
 - **v1.0 (PoC)**: Read-only compliance evaluation and reporting
 - **v2.0 (Future)**: Add write capabilities and advanced features
 
-**Note**: MCP connector functions (`github_list_project_items`, `github_get_issue_handler`, `github_list_issues_comments`) are called directly by the agent and are not wrapped in GLLM Plugin tools.
+**Note**: MCP connector functions (`github_list_project_items`, `github_list_issues_comments`) are called directly by the agent and are not wrapped in GLLM Plugin tools.
 
 ## Development Setup with Poetry
 

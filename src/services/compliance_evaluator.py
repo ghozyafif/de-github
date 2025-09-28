@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-GitHub Issue Compliance Evaluator Tool
+"""GitHub Issue Compliance Evaluator Tool.
 
 Self-contained GLLM Plugin tool that evaluates GitHub issues against 7 compliance rules.
 All utilities are inline - no external library imports except standard library.
@@ -33,9 +32,13 @@ SYSTEM_MESSAGE_PATTERNS = [
     r'^Merged #\d+',
 ]
 
+# Constants
+DAYS_THRESHOLD = 7
+HIGH_PRIORITY_DAYS = 3
+
 
 class Severity(Enum):
-    """Violation severity levels"""
+    """Violation severity levels."""
     HIGH = "high"      # Overdue items
     MEDIUM = "medium"  # Missing metadata
     LOW = "low"        # Warnings
@@ -43,7 +46,7 @@ class Severity(Enum):
 
 @dataclass
 class ComplianceViolation:
-    """Represents a single compliance violation"""
+    """Represents a single compliance violation."""
     rule_id: int
     rule_name: str
     severity: Severity
@@ -56,9 +59,9 @@ class ComplianceViolation:
 
 
 def to_jakarta_timezone(iso_string: Optional[str]) -> Optional[datetime]:
-    """
-    Convert ISO 8601 string to Asia/Jakarta timezone (UTC+7)
-    Handles various ISO formats including Z notation and +HH:MM offsets
+    """Convert ISO 8601 string to Asia/Jakarta timezone (UTC+7).
+
+    Handles various ISO formats including Z notation and +HH:MM offsets.
     """
     if not iso_string:
         return None
@@ -85,9 +88,9 @@ def to_jakarta_timezone(iso_string: Optional[str]) -> Optional[datetime]:
 
 
 def calculate_days_difference(start_date: Optional[datetime], end_date: datetime) -> Optional[int]:
-    """
-    Calculate calendar days difference in Jakarta timezone
-    Returns None if start_date is None
+    """Calculate calendar days difference in Jakarta timezone.
+
+    Returns None if start_date is None.
     """
     if not start_date:
         return None
@@ -104,9 +107,9 @@ def calculate_days_difference(start_date: Optional[datetime], end_date: datetime
 
 
 def is_bot_comment(username: str, body: str = "") -> bool:
-    """
-    Detect if comment is from bot/system
-    Checks both username patterns and message content
+    """Detect if comment is from bot/system.
+
+    Checks both username patterns and message content.
     """
     if not username:
         return False
@@ -117,7 +120,11 @@ def is_bot_comment(username: str, body: str = "") -> bool:
             return True
 
     # Check for emoji-only comments (often reactions from bots)
-    if body and re.match(r'^[\s\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+$', body):
+    emoji_pattern = (
+        r'^[\s\U0001F600-\U0001F64F\U0001F300-\U0001F5FF'
+        r'\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+$'
+    )
+    if body and re.match(emoji_pattern, body):
         return True
 
     # Check for system messages
@@ -129,15 +136,15 @@ def is_bot_comment(username: str, body: str = "") -> bool:
 
 
 def extract_field_value(field_values: List[Dict], field_name: str) -> Optional[Any]:
-    """Extract a specific field value from the field_values array"""
-    for field in field_values:
-        if field.get("name") == field_name:
-            return field.get("value")
+    """Extract a specific field value from the field_values array."""
+    for field_item in field_values:
+        if field_item.get("name") == field_name:
+            return field_item.get("value")
     return None
 
 
 def check_rule_1_empty_assignees(issue: Dict) -> Optional[ComplianceViolation]:
-    """Rule 1: Check if assignees field is empty"""
+    """Rule 1: Check if assignees field is empty."""
     assignees = issue.get("content", {}).get("assignees", [])
 
     if not assignees or len(assignees) == 0:
@@ -155,7 +162,7 @@ def check_rule_1_empty_assignees(issue: Dict) -> Optional[ComplianceViolation]:
 
 
 def check_rule_2_empty_incoming_date(issue: Dict) -> Optional[ComplianceViolation]:
-    """Rule 2: Check if incoming date field is empty"""
+    """Rule 2: Check if incoming date field is empty."""
     incoming_date = extract_field_value(issue.get("field_values", []), "Incoming Date")
 
     if not incoming_date:
@@ -174,7 +181,7 @@ def check_rule_2_empty_incoming_date(issue: Dict) -> Optional[ComplianceViolatio
 
 
 def check_rule_3_empty_due_date(issue: Dict) -> Optional[ComplianceViolation]:
-    """Rule 3: Check if due date field is empty"""
+    """Rule 3: Check if due date field is empty."""
     due_date = extract_field_value(issue.get("field_values", []), "Due Date")
 
     if not due_date:
@@ -193,7 +200,7 @@ def check_rule_3_empty_due_date(issue: Dict) -> Optional[ComplianceViolation]:
 
 
 def check_rule_4_empty_status(issue: Dict) -> Optional[ComplianceViolation]:
-    """Rule 4: Check if status field is empty or unrecognized"""
+    """Rule 4: Check if status field is empty or unrecognized."""
     status = extract_field_value(issue.get("field_values", []), "Status")
     valid_statuses = ["Todo", "In Progress", "In Review", "Done", "Blocked", "Draft"]
 
@@ -213,7 +220,7 @@ def check_rule_4_empty_status(issue: Dict) -> Optional[ComplianceViolation]:
 
 
 def check_rule_5_missing_approval_overdue(issue: Dict, current_date: datetime) -> Optional[ComplianceViolation]:
-    """Rule 5: Check if Pak On's Approval is missing and issue is >7 days old"""
+    """Rule 5: Check if Pak On's Approval is missing and issue is >7 days old."""
     approval = extract_field_value(issue.get("field_values", []), "Pak On's Approval for Timeline")
     incoming_date_str = extract_field_value(issue.get("field_values", []), "Incoming Date")
 
@@ -221,7 +228,7 @@ def check_rule_5_missing_approval_overdue(issue: Dict, current_date: datetime) -
         incoming_date = to_jakarta_timezone(incoming_date_str)
         if incoming_date:
             days_since_incoming = calculate_days_difference(incoming_date, current_date)
-            if days_since_incoming and days_since_incoming > 7:
+            if days_since_incoming and days_since_incoming > DAYS_THRESHOLD:
                 return ComplianceViolation(
                     rule_id=5,
                     rule_name="Missing Pak On Approval (Overdue)",
@@ -237,18 +244,18 @@ def check_rule_5_missing_approval_overdue(issue: Dict, current_date: datetime) -
 
 
 def check_rule_6_due_soon(issue: Dict, current_date: datetime) -> Optional[ComplianceViolation]:
-    """Rule 6: Check if issue is due within next 7 days"""
+    """Rule 6: Check if issue is due within next 7 days."""
     due_date_str = extract_field_value(issue.get("field_values", []), "Due Date")
 
     if due_date_str:
         due_date = to_jakarta_timezone(due_date_str)
         if due_date:
             days_until_due = calculate_days_difference(current_date, due_date)
-            if days_until_due is not None and 0 <= days_until_due <= 7:
+            if days_until_due is not None and 0 <= days_until_due <= DAYS_THRESHOLD:
                 return ComplianceViolation(
                     rule_id=6,
                     rule_name="Due Soon Warning",
-                    severity=Severity.HIGH if days_until_due <= 3 else Severity.MEDIUM,
+                    severity=Severity.HIGH if days_until_due <= HIGH_PRIORITY_DAYS else Severity.MEDIUM,
                     issue_number=issue.get("content", {}).get("number", 0),
                     issue_title=issue.get("title", ""),
                     issue_url=issue.get("content", {}).get("url", ""),
@@ -259,8 +266,10 @@ def check_rule_6_due_soon(issue: Dict, current_date: datetime) -> Optional[Compl
     return None
 
 
-def check_rule_7_no_recent_updates(issue: Dict, comments: List[Dict], current_date: datetime) -> Optional[ComplianceViolation]:
-    """Rule 7: Check if issue has no human comments in last 7 days"""
+def check_rule_7_no_recent_updates(
+    issue: Dict, comments: List[Dict], current_date: datetime
+) -> Optional[ComplianceViolation]:
+    """Rule 7: Check if issue has no human comments in last 7 days."""
     if not comments:
         # No comments at all
         return ComplianceViolation(
@@ -306,7 +315,7 @@ def check_rule_7_no_recent_updates(issue: Dict, comments: List[Dict], current_da
 
     # Check if most recent human comment is >7 days old
     days_since_comment = calculate_days_difference(most_recent_human_comment, current_date)
-    if days_since_comment and days_since_comment > 7:
+    if days_since_comment and days_since_comment > DAYS_THRESHOLD:
         return ComplianceViolation(
             rule_id=7,
             rule_name="No Recent Updates",
@@ -323,8 +332,7 @@ def check_rule_7_no_recent_updates(issue: Dict, comments: List[Dict], current_da
 
 
 def retry_with_backoff(func: Callable, max_retries: int = 3, initial_delay: float = 1.0) -> Any:
-    """
-    Retry a function with exponential backoff
+    """Retry a function with exponential backoff.
 
     Args:
         func: Function to retry
@@ -351,12 +359,15 @@ def retry_with_backoff(func: Callable, max_retries: int = 3, initial_delay: floa
             else:
                 print(f"All {max_retries + 1} attempts failed. Last error: {e}")
 
-    raise last_exception
+    # This should never happen since we caught exceptions in the loop
+    if last_exception:
+        raise last_exception
+    else:
+        raise RuntimeError(f"Function failed after {max_retries + 1} attempts")
 
 
 def safe_extract_field(issue: Dict, field_path: str, default: Any = None) -> Any:
-    """
-    Safely extract a field from nested dictionary
+    """Safely extract a field from nested dictionary.
 
     Args:
         issue: Issue dictionary
@@ -381,15 +392,14 @@ def safe_extract_field(issue: Dict, field_path: str, default: Any = None) -> Any
         return default
 
 
-def process_issue_with_error_handling(
+def process_issue_with_error_handling( # noqa: PLR0912
     issue: Dict,
     comments: List[Dict],
     current_date: datetime,
     issue_index: int,
     total_issues: int
-) -> Tuple[List[Any], Dict[str, Any]]:
-    """
-    Process a single issue with comprehensive error handling
+) -> Tuple[List[Any], Optional[Dict[str, Any]]]:
+    """Process a single issue with comprehensive error handling.
 
     Returns:
         Tuple of (violations, compliant_issue_info or None)
@@ -466,13 +476,12 @@ def process_issue_with_error_handling(
         return issue_violations, None
 
 
-def github_compliance_evaluator_tool(
+def github_compliance_evaluator_tool( # noqa: PLR0912
     issues: List[Dict],
     comments_by_issue: Dict[int, List[Dict]],
     current_date_str: Optional[str] = None
 ) -> Dict[str, Any]:
-    """
-    Main GLLM Plugin tool function for compliance evaluation
+    """Main GLLM Plugin tool function for compliance evaluation.
 
     Args:
         issues: List of GitHub issue objects from MCP
@@ -484,7 +493,8 @@ def github_compliance_evaluator_tool(
     """
     # Parse current date
     if current_date_str:
-        current_date = to_jakarta_timezone(current_date_str + "T00:00:00+07:00")
+        parsed_date = to_jakarta_timezone(current_date_str + "T00:00:00+07:00")
+        current_date = parsed_date if parsed_date else datetime.now(timezone(timedelta(hours=7)))
     else:
         # Use current time in Jakarta
         jakarta_offset = timezone(timedelta(hours=7))
@@ -524,21 +534,20 @@ def github_compliance_evaluator_tool(
             # Update violation counts
             for violation in issue_violations:
                 violations.append(violation)
-                rule_key = f"rule_{violation.rule_id}_{violation.rule_name.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
                 # Normalize the key to match our structure
-                if violation.rule_id == 1:
+                if violation.rule_id == 1: # noqa: PLR2004
                     violations_by_rule["rule_1_empty_assignees"] += 1
-                elif violation.rule_id == 2:
+                elif violation.rule_id == 2: # noqa: PLR2004
                     violations_by_rule["rule_2_empty_incoming_date"] += 1
-                elif violation.rule_id == 3:
+                elif violation.rule_id == 3: # noqa: PLR2004
                     violations_by_rule["rule_3_empty_due_date"] += 1
-                elif violation.rule_id == 4:
+                elif violation.rule_id == 4: # noqa: PLR2004
                     violations_by_rule["rule_4_empty_status"] += 1
-                elif violation.rule_id == 5:
+                elif violation.rule_id == 5: # noqa: PLR2004
                     violations_by_rule["rule_5_missing_approval_overdue"] += 1
-                elif violation.rule_id == 6:
+                elif violation.rule_id == 6: # noqa: PLR2004
                     violations_by_rule["rule_6_due_soon_warning"] += 1
-                elif violation.rule_id == 7:
+                elif violation.rule_id == 7: # noqa: PLR2004
                     violations_by_rule["rule_7_no_recent_updates"] += 1
 
             # Add compliant issue if no violations
@@ -554,7 +563,7 @@ def github_compliance_evaluator_tool(
 
     # Calculate summary
     total_issues = len(issues)
-    issues_with_violations = len(set(v.issue_number for v in violations))
+    issues_with_violations = len({v.issue_number for v in violations})
     compliance_rate = ((total_issues - issues_with_violations) / total_issues * 100) if total_issues > 0 else 0
 
     # Format violations for output

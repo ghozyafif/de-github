@@ -33,7 +33,7 @@
 
 ## Summary
 
-**v1.0 PoC (Background Agent Read-Only)**: Automated GitHub Project compliance background agent that runs in automated mode, checks 15 sampled issues (5 per status) against 7 defined rules, and outputs a comprehensive JSON report to terminal. Uses company Agentic AI platform with Claude Sonnet 4, MCP integration for GitHub Projects v2, and self-contained Python GLLM Plugin tools with modular SOLID-compliant architecture. **No file storage or write operations** - terminal output only.
+**v1.0 PoC (Background Agent Read-Only)**: Automated GitHub Project compliance background agent that runs in automated mode, checks 15 sampled issues (5 per status) against 6 defined rules, and outputs a comprehensive JSON report to terminal. Uses company Agentic AI platform with Claude Sonnet 4, MCP integration for GitHub Projects v2, and self-contained Python GLLM Plugin tools with modular SOLID-compliant architecture. Workflow: github_list_project_items (with pagination) → github_merge_tool → github_compliance_evaluator_tool → github_report_generator_tool. **No file storage or write operations** - terminal output only.
 
 **v2.0 Full (Write-Capable)**: [FUTURE] Extends v1 with automated comment posting and scheduled execution capabilities.
 
@@ -46,9 +46,9 @@
 **Testing**: pytest with fixtures for rule evaluation, MCP mock integration tests  
 **Target Platform**: Company Agentic AI Platform (cloud-hosted)
 **Project Type**: single - agent tools with orchestrator pattern  
-**Performance Goals**: Process 15 sampled issues (5 per status), complete agent workflow within 2 minutes, optimize for minimal MCP calls
+**Performance Goals**: Process 15 sampled issues (5 per status), complete agent workflow within 2 minutes, optimize for minimal MCP calls with pagination handling
 **Constraints**: <720s total agent timeout, <100MB memory per execution, Asia/Jakarta timezone, exponential backoff rate limiting  
-**Scale/Scope**: Single GitHub Project monitoring, 7 compliance rules, on-demand execution (v1.0 PoC)
+**Scale/Scope**: Single GitHub Project monitoring, 6 compliance rules, on-demand execution (v1.0 PoC)
 
 ## Technical Implementation Details
 
@@ -58,8 +58,7 @@
 src/
 ├── utils/                    # Shared utilities (DRY principle)
 │   ├── __init__.py
-│   ├── timezone_utils.py     # Asia/Jakarta timezone handling
-│   └── bot_detection.py      # Bot comment filtering patterns
+│   └── timezone_utils.py     # Asia/Jakarta timezone handling
 ├── services/                 # Business logic layer
 │   ├── __init__.py
 │   ├── compliance_rules/     # Individual rule implementations (SRP)
@@ -69,7 +68,6 @@ src/
 │   │   ├── rule_empty_dates.py
 │   │   ├── rule_missing_approval.py
 │   │   └── rule_overdue_warning.py
-│   ├── compliance_evaluator.py  # Rule orchestrator (OCP)
 │   └── report_generator.py      # Terminal JSON formatting
 └── cli/                     # Optional test orchestrator
     └── orchestrator.py
@@ -119,73 +117,6 @@ def calculate_days_difference(start_date: datetime, end_date: datetime) -> int:
 def is_within_days(target_date: datetime, reference_date: datetime, days: int) -> bool:
     """Check if target_date is within specified days of reference_date"""
     return abs(calculate_days_difference(reference_date, target_date)) <= days
-```
-
-### Bot Comment Filtering (Rule #7)
-
-```python
-# src/utils/bot_detection.py - Extracted for reusability
-import re
-from typing import List
-
-# Bot detection patterns for GitHub ecosystem
-BOT_PATTERNS: List[str] = [
-    r'.*\[bot\]$',  # GitHub bots ending with [bot]
-    r'^(github-actions|dependabot|renovate|codecov)\[bot\]$',  # Common bots
-    r'^(Automatically (closed|merged)|This (issue|PR) has been)',  # System messages
-    r'^(Co-authored-by:|Signed-off-by:)',  # Git commit metadata
-]
-
-def is_bot_comment(username: str, body: str) -> bool:
-    """Detect if comment is from bot/system
-
-    Args:
-        username: Comment author username
-        body: Comment text content
-
-    Returns:
-        True if comment appears to be from bot/system
-
-    Example:
-        >>> is_bot_comment("github-actions[bot]", "This PR has been merged")
-        True
-        >>> is_bot_comment("john-doe", "Looks good to me")
-        False
-    """
-    if not username or not body:
-        return True
-
-    # Check username patterns
-    for pattern in BOT_PATTERNS:
-        if re.match(pattern, username, re.IGNORECASE):
-            return True
-
-    # Check for emoji-only comments (likely reactions)
-    if re.match(r'^[\s\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+$', body.strip()):
-        return True
-
-    # Check for very short automated responses
-    if len(body.strip()) < 10 and any(word in body.lower() for word in ['merged', 'closed', 'auto']):
-        return True
-
-    return False
-
-def filter_human_comments(comments: List[dict]) -> List[dict]:
-    """Filter list to only include human comments
-
-    Args:
-        comments: List of comment objects with 'user' and 'body' fields
-
-    Returns:
-        Filtered list containing only human comments
-    """
-    return [
-        comment for comment in comments
-        if not is_bot_comment(
-            comment.get('user', {}).get('login', ''),
-            comment.get('body', '')
-        )
-    ]
 ```
 
 ### SOLID Compliance Rule Architecture
@@ -273,6 +204,7 @@ class EmptyAssigneesRule(ComplianceRule):
         )
 
 # Additional rule implementations follow same pattern...
+# Rules 2-6: empty_dates, missing_approval, overdue_warning, etc.
 ```
 
 ### Compliance Evaluator (Open/Closed Principle)
@@ -296,31 +228,26 @@ class ComplianceEvaluator:
             EmptyAssigneesRule(),
             EmptyDatesRule(),
             MissingApprovalRule(),
-            OverdueWarningRule(),
-            NoRecentUpdatesRule()
+            OverdueWarningRule()
+            # 6 rules total - no comment-based rules
         ]
 
     def evaluate_issue_compliance(
         self,
-        issue: Dict[str, Any],
-        comments: List[Dict[str, Any]]
+        issue: Dict[str, Any]
     ) -> List[ViolationResult]:
         """Evaluate single issue against all registered rules
 
         Args:
             issue: GitHub issue object
-            comments: Issue comments list
 
         Returns:
             List of violation results from all rules
         """
-        # Filter human comments for Rule 7 evaluation
-        human_comments = filter_human_comments(comments)
-
         violations = []
         for rule in self.rules:
             try:
-                result = rule.evaluate(issue, human_comments)
+                result = rule.evaluate(issue)
                 violations.append(result)
             except Exception as e:
                 # Graceful degradation - log error but continue
@@ -598,7 +525,7 @@ _This section describes what the /tasks command will do - DO NOT execute during 
 
 - Agent workflow: 15 issues in <2 minutes (target: <90 seconds)
 - Memory usage: <50MB total (target: <30MB)
-- MCP calls: ~45 total (3 lists + 15 details + 15 comments)
+- MCP calls: ~3-9 total (pagination dependent)
 - Background execution: Single run, no interaction
 
 **Estimated Output**: 11 streamlined tasks for background agent implementation
@@ -614,22 +541,19 @@ Display Name: GitHub Issue Compliance Background Agent (PoC)
 Description: Background agent that audits a GitHub Project for 7 compliance rules and generates read-only reports
 Model: Claude Sonnet 4
 Tools:
-  - MCP: github_projects_v2 (read-only: lists, details, comments)
+  - MCP: github_projects_v2 (read-only: lists with pagination)
     Direct agent access to MCP connector functions:
-      - github_list_project_items(organization, project_number, status_filters)
-      - github_get_issue_handler(owner, repo, issue_number)
-      - github_list_issues_comments(owner, repo, issue_number)
+      - github_list_project_items(organization, project_number, status_filters, page)
 
   - GLLM Python Plugin Tools (modular SOLID-compliant architecture):
-      - github_merge_tool(mcp_list_payload_results) [existing]
-      - github_formatter_tool(issues, project_number) [existing]
-      - github_compliance_evaluator_tool(issues, comments_by_issue)
-      - github_report_generator_tool(evaluation_results)
+      - github_merge_tool(paginated_list_results) [combines paginated responses]
+      - github_compliance_evaluator_tool(merged_issues) [evaluates 6 rules]
+      - github_report_generator_tool(evaluation_results) [terminal JSON output]
 Timeout (seconds): 720
 Chat History Limit: 20
 System Instructions: |
   You are a GitHub Project compliance monitoring background agent (v1.0 PoC - Read-Only). Your role is to:
-  1. Check GitHub Project issues for compliance with 7 defined rules
+  1. Check GitHub Project issues for compliance with 6 defined rules
   2. Generate summary reports of violations
   3. Respond to queries about compliance status
   4. Export reports to various formats (JSON/CSV/Markdown)
@@ -641,7 +565,7 @@ System Instructions: |
 
   OPERATIONAL POLICY:
   - Use Asia/Jakarta (UTC+7) timezone for all date calculations
-  - Exclude bot comments when checking "no updates in 7 days" rule
+  - Handle pagination automatically when has_next=true in MCP responses
   - Provide actionable violation descriptions in reports
   - Support interactive queries about specific violations
 
@@ -652,7 +576,6 @@ System Instructions: |
   4. Empty status field (field_values["Status"])
   5. Empty "Pak On's Approval for Timeline" field AND more than 7 days from incoming date
   6. Will be due in next 7 days (warning)
-  7. No human comments in last 7 days (excluding bot/system comments)
 
   GUARDRAILS:
   - Never modify issue statuses or field values
@@ -687,8 +610,7 @@ System Instructions: |
     "rule_3_empty_due_date": 3,
     "rule_4_empty_status": 0,
     "rule_5_missing_approval_overdue": 1,
-    "rule_6_due_soon_warning": 4,
-    "rule_7_no_recent_updates": 2
+    "rule_6_due_soon_warning": 4
   },
   "violation_details": [
     {

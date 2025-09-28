@@ -99,4 +99,6 @@ poetry run pytest --cov=src tests/ -v
 
 - Target execution time: <2 minutes
 - Memory usage: <100MB per execution
-- MCP calls: ~33 total (optimized for minimal calls)
+- MCP calls: ~18 total
+  - 3 calls to `github_list_project_items` (by status)
+  - 15 calls to `github_list_issues_comments` (for Rule #7 only)

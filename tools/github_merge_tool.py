@@ -10,12 +10,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from gllm_agents.utils import LoggerManager
-from gllm_plugin.tools import tool_plugin
+from glchat_plugin.tools import tool_plugin
+# from gllm_agents.utils import LoggerManager
 from langchain_core.tools import BaseTool
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
-logger = LoggerManager().get_logger(__name__)
+# logger = LoggerManager().get_logger(__name__)
 
 
 # -------------------------
@@ -92,8 +92,9 @@ class MergeInput(BaseModel):
         description="If true, returns total_count and unique_count."
     )
 
-    @validator("mcp_list_payload_results")
-    def _non_empty(cls, v):
+    @field_validator('mcp_list_payload_results')
+    @classmethod
+    def _non_empty(cls, v: Any):
         if not v:
             raise ValueError("mcp_list_payload_results must not be empty")
         return v
@@ -147,7 +148,8 @@ class GithubMergeTool(BaseTool):
                 result["total_count"] = total
                 result["unique_count"] = len(merged_list)
 
-            logger.info(
+            # logger.info(
+            print(
                 f"Merged {total} items from {len(mcp_list_payload_results)} responses "
                 f"into {len(merged_list)} unique issues."
             )
@@ -178,5 +180,6 @@ class GithubMergeTool(BaseTool):
             return result
 
         except Exception as e:
-            logger.error(f"Merge error: {e}")
+            # logger.error(f"Merge error: {e}")
+            print(f"❌ Merge error: {e}")
             return {"error": f"❌ Merge error: {str(e)}"}
